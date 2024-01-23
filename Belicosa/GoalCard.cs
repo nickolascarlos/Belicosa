@@ -1,4 +1,4 @@
-﻿using Belicosa.interfaces;
+﻿using Belicosa.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +9,13 @@ namespace Belicosa
 {
     public class GoalCard
     {
-        private Reachable goal {  get; set; }
-        private string description { get; set; }
+        private IReachable Goal { get; set; }
+        private string Description { get; set; }
 
-        public GoalCard(Reachable goal, string description)
+        public GoalCard(IReachable goal, string description)
         {
-            this.goal = goal;
-            this.description = description;
+            this.Goal = goal;
+            this.Description = description;
         }
     }
 }

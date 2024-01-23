@@ -8,13 +8,13 @@ namespace Belicosa
 {
     public class Territory
     {
-        private string name {  get; set; }
-        private List<Territory> borderTerritories = new();
-        private Player? ocuppyingPlayer {  get; set; }
-        private int troopCount { get; set; } = 0;
+        private string Name {  get; set; }
+        private List<Territory> BorderTerritories { get; set; }  = new();
+        private Player? OcuppyingPlayer { get; set; }
+        private int TroopCount { get; set; } = 0;
 
         public Territory(string name) {
-            this.name = name;
+            this.Name = name;
         }
 
     }

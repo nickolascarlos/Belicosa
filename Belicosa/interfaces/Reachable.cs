@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Belicosa.interfaces
+namespace Belicosa.Interfaces
 {
-    public interface Reachable
+    public interface IReachable
     {
-        bool IsReached();
+        bool IsReached(Player player);
     }
 }

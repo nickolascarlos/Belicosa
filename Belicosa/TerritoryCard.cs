@@ -1,4 +1,4 @@
-﻿using Belicosa.enums;
+﻿using Belicosa.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,13 +10,13 @@ namespace Belicosa
 {
     public class TerritoryCard
     {
-        private Territory territory {  get; set; }
-        private Shape shape { get; set; }
+        private Territory Territory { get; set; }
+        private Shape Shape { get; set; }
 
         public TerritoryCard(Territory territory, Shape shape)
         {
-            this.territory = territory;
-            this.shape = shape;
+            this.Territory = territory;
+            this.Shape = shape;
         }
 
     }

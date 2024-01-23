@@ -8,12 +8,12 @@ namespace Belicosa
 {
     public class Continent
     {
-        public string name { get; private set; }
+        public string Name { get; private set; }
         private List<Territory> territories { get; set; } = new();
 
         public Continent(string name)
         {
-            this.name = name;
+            this.Name = name;
         }
 
     }

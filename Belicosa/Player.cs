@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Belicosa.enums;
+using Belicosa.Enums;
 
 namespace Belicosa
 {
     public class Player
     {
-        private string name {  get; set; }
-        private Color color { get; set; }
-        private GoalCard goalCard { get; set; }
-        private int availableFreeDistributionTroops { get; set; } = 0;
-        private int availableContinentalDistributionTroops { get; set; } = 0;
+        private string Name {  get; set; }
+        private Color Color { get; set; }
+        private GoalCard GoalCard { get; set; }
+        private int AvailableFreeDistributionTroops { get; set; } = 0;
+        private int AvailableContinentalDistributionTroops { get; set; } = 0;
 
         public Player(string name, Color color, GoalCard goalCard)
         {
-            this.name = name;
-            this.color = color;
-            this.goalCard = goalCard;
+            this.Name = name;
+            this.Color = color;
+            this.GoalCard = goalCard;
             
         }
     }
