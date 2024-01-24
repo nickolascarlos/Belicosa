@@ -8,12 +8,21 @@ namespace Belicosa
 {
     public class Continent
     {
+        
         public string Name { get; private set; }
-        private List<Territory> territories { get; set; } = new();
+        public List<Territory> Territories { get; private set; } = new();
 
         public Continent(string name)
         {
             this.Name = name;
+        }
+
+        public void AddTerritories(List<Territory> territories)
+        {
+            foreach (Territory territory in territories)
+            {
+                Territories.Add(territory);
+            } 
         }
 
     }

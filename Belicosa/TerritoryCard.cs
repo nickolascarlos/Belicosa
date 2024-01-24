@@ -19,5 +19,15 @@ namespace Belicosa
             this.Shape = shape;
         }
 
+        public Territory GetTerritory()
+        {
+            return Territory;
+        }
+
+        public override string ToString()
+        {
+            return $"TerritoryCard Name={Territory.Name} Shape={Shape.ToString()}";
+        }
+
     }
 }
