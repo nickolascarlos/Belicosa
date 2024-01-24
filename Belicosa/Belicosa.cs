@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -115,6 +116,39 @@ namespace Belicosa
         }
 
 
+        /// <summary>
+        /// Compares two sets of dice throws in a conflict between attackers and defenders.
+        /// </summary>
+        /// <param name="attackThrows">A list of integers representing the dice throws of the attackers.</param>
+        /// <param name="defenseThrows">A list of integers representing the dice throws of the defenders.</param>
+        /// <returns>
+        /// A tuple containing the number of troops lost by the attacker and the number of troops lost by the defender.
+        /// The first item of the tuple represents troops lost by the attacker, and the second item represents troops lost by the defender.
+        /// </returns>
+        public static Tuple<int, int> CompareThrows(List<int> attackThrows, List<int> defenseThrows)
+        {
+            // TODO: Implement data validation
 
+            attackThrows = attackThrows.OrderByDescending(x => x).ToList();
+            defenseThrows = defenseThrows.OrderByDescending(x => x).ToList();
+
+            var (troopsLostByAttacker, troopsLostByDefender) = (0, 0);
+            
+            for (int i = 0; i < Math.Min(attackThrows.Count, defenseThrows.Count); i++)
+            {
+                int attackThrow = attackThrows[i];
+                int defenseThrow = defenseThrows[i];
+
+                if (attackThrow > defenseThrow)
+                {
+                    troopsLostByDefender++;
+                } else
+                {
+                    troopsLostByAttacker++;
+                }
+            }
+
+            return new Tuple<int, int>(troopsLostByAttacker, troopsLostByDefender);
+        }
     }
 }
