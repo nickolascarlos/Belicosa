@@ -151,13 +151,16 @@ namespace Belicosa
             return new Tuple<int, int>(troopsLostByAttacker, troopsLostByDefender);
         }
     
-        public void PerformAttack(Territory attackerTerritory, Territory defenderTerritory, int attackerTroopsQuantity)
+        public Tuple<int, int> PerformAttack(Territory attackerTerritory, Territory defenderTerritory, int attackerTroopsQuantity)
         {
             if (attackerTroopsQuantity > 3 || attackerTroopsQuantity < 1)
                 throw new Exception("Invalid attack troops quantity");
 
             if (attackerTroopsQuantity >= attackerTerritory.TroopCount)
                 throw new Exception("Not enough troops");
+
+            if (attackerTerritory.GetOccupant() == defenderTerritory.GetOccupant())
+                throw new Exception("One cannot attack its own territory");
 
             Player attacker = attackerTerritory.GetOccupant();
             Player defender = defenderTerritory.GetOccupant();
@@ -178,10 +181,12 @@ namespace Belicosa
                 defenderTerritory.SetOcuppyingPlayer(attacker);
                 attacker.TransferTroops(attackerTerritory, defenderTerritory, 1);
             }
+
+            return battleResult;
         }
-    
+
         public Territory GetTerritoryByName(string name)
-        {
+        {   
             return (from territory in Territories where territory.Name == name select territory).First();
         }
 
