@@ -11,7 +11,7 @@ namespace Belicosa
         public string Name {  get; set; }
         public List<Territory> BorderTerritories { get; private set; }  = new();
         private Player? OcuppyingPlayer { get; set; }
-        private int TroopCount { get; set; } = 0;
+        public int TroopCount { get; private set; } = 0;
 
         public Territory(string name) {
             this.Name = name;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,12 +15,12 @@ namespace Belicosa
         private static Belicosa? _instance;
 
         private int CurrentCardExchangeCount { get; set; } = 0;
-        private List<Player> Players { get; set; } = new List<Player>();
+        public List<Player> Players { get; private set; } = new List<Player>();
         private IEnumerable<Player> DefaultPlayersTurnIterator { get; set; }
         private List<GoalCard> GoalCards { get; set; } = new List<GoalCard>();
         private List<TerritoryCard> TerritoryCards { get; set; } = new List<TerritoryCard>();
         private List<Territory> Territories { get; set; } = new List<Territory>();
-        private List<Continent> Continents { get; set; } = new List<Continent>();
+        public List<Continent> Continents { get; private set; } = new List<Continent>();
 
         private Belicosa() { }
 
@@ -115,7 +116,6 @@ namespace Belicosa
             return (from continent in Continents where continent.Territories.Contains(territory) select continent).First();
         }
 
-
         /// <summary>
         /// Compares two sets of dice throws in a conflict between attackers and defenders.
         /// </summary>
@@ -149,6 +149,58 @@ namespace Belicosa
             }
 
             return new Tuple<int, int>(troopsLostByAttacker, troopsLostByDefender);
+        }
+    
+        public void PerformAttack(Territory attackerTerritory, Territory defenderTerritory, int attackerTroopsQuantity)
+        {
+            if (attackerTroopsQuantity > 3 || attackerTroopsQuantity < 1)
+                throw new Exception("Invalid attack troops quantity");
+
+            if (attackerTroopsQuantity >= attackerTerritory.TroopCount)
+                throw new Exception("Not enough troops");
+
+            Player attacker = attackerTerritory.GetOccupant();
+            Player defender = defenderTerritory.GetOccupant();
+
+            List<int> attackerThrows = attacker.Throw(attackerTroopsQuantity);
+            List<int> defenderThrows = defender.Throw(Math.Min(3, defenderTerritory.TroopCount));
+
+            Tuple<int, int> battleResult = CompareThrows(attackerThrows, defenderThrows);
+
+            int troopsLostByAttacker = battleResult.Item1;
+            int troopsLostByDefender = battleResult.Item2;
+
+            attackerTerritory.RemoveTroops(troopsLostByAttacker);
+            defenderTerritory.RemoveTroops(troopsLostByDefender);
+
+            if (defenderTerritory.TroopCount == 0)
+            {
+                defenderTerritory.SetOcuppyingPlayer(attacker);
+                attacker.TransferTroops(attackerTerritory, defenderTerritory, 1);
+            }
+        }
+    
+        public Territory GetTerritoryByName(string name)
+        {
+            return (from territory in Territories where territory.Name == name select territory).First();
+        }
+
+        public Continent GetContinentByName(string name)
+        {
+            return (from continent in Continents where continent.Name == name select continent).First();
+        }
+
+        public void PrintGameResume()
+        {
+            foreach (var player in Belicosa.GetInstance().Players)
+            {
+                Console.WriteLine(player.Name);
+                Console.WriteLine("\t Territories");
+                foreach (var territory in GetPlayerTerritories(player))
+                {
+                    Console.WriteLine($"\t\t * {territory.Name} ({territory.TroopCount})");
+                }
+            }
         }
     }
 }
