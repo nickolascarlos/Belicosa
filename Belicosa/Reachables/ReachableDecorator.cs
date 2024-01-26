@@ -10,7 +10,17 @@ namespace Belicosa.Reachables
     public abstract class ReachableDecorator : IReachable
     {
         protected IReachable? Decorated { get; set; }
+        public abstract bool CheckCurrentReached(Player player);
 
-        public abstract bool IsReached(Player player);
+        public bool IsReached(Player player)
+        {
+            if (Decorated is not null && !Decorated.IsReached(player))
+            {
+                return false;
+            }
+
+            return CheckCurrentReached(player);
+        }
+
     }
 }

@@ -21,9 +21,11 @@ namespace Belicosa.Reachables
             this.TerritoriesQuantity = territoriesQuantity;
         }
 
-        public override bool IsReached(Player player)
+        public override bool CheckCurrentReached(Player player)
         {
-            throw new NotImplementedException();
+            return Belicosa.GetInstance().GetPlayerTerritories(player).Count > TerritoriesQuantity;
         }
+
+
     }
 }

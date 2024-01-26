@@ -22,9 +22,9 @@ namespace Belicosa.Reachables
             this.ContinentToBeConquered = continent;
         }
 
-        public override bool IsReached(Player player)
+        public override bool CheckCurrentReached(Player player)
         {
-            throw new NotImplementedException();
+            return ContinentToBeConquered.Territories.TrueForAll(territory => territory.GetOccupant() == player);
         }
     }
 }

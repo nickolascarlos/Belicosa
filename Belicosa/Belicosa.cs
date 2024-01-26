@@ -200,6 +200,7 @@ namespace Belicosa
             foreach (var player in Belicosa.GetInstance().Players)
             {
                 Console.WriteLine(player.Name);
+                Console.WriteLine($"\t Goal: {player.GoalCard.Description}");
                 Console.WriteLine("\t Territories");
                 foreach (var territory in GetPlayerTerritories(player))
                 {

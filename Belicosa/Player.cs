@@ -10,9 +10,9 @@ namespace Belicosa
 {
     public class Player
     {
-        public string Name {  get; set; }
-        public Color Color { get; set; }
-        private GoalCard GoalCard { get; set; }
+        public string Name {  get; private set; }
+        public Color Color { get; private set; }
+        public GoalCard GoalCard { get; private set; }
 
         public List<TerritoryCard> TerritoryCards { get; set; } = new List<TerritoryCard>();
         public int AvailableFreeDistributionTroops { get; private set; } = 0;
@@ -45,9 +45,9 @@ namespace Belicosa
             TerritoryCards.Add(card);
         }
 
-        public void Attack(Territory attackerTerritory, Territory defenderTerritory, int troopsQuantity)
+        public Tuple<int, int> Attack(Territory attackerTerritory, Territory defenderTerritory, int troopsQuantity)
         {
-            Belicosa.GetInstance().PerformAttack(attackerTerritory, defenderTerritory, troopsQuantity);
+            return Belicosa.GetInstance().PerformAttack(attackerTerritory, defenderTerritory, troopsQuantity);
         }
 
         public List<int> Throw(int quantity)
@@ -100,6 +100,11 @@ namespace Belicosa
             AvailableContinentalDistributionTroops[territoryContinent] -= troopsQuantity;
             territory.AddTroops(troopsQuantity);
             return true;
+        }
+
+        public bool ReachedGoal()
+        {
+           return GoalCard.IsReached(this);
         }
     }
 }

@@ -9,13 +9,18 @@ namespace Belicosa
 {
     public class GoalCard
     {
-        private IReachable Goal { get; set; }
-        private string Description { get; set; }
+        public IReachable Goal { get; private set; }
+        public string Description { get; private set; }
 
         public GoalCard(IReachable goal, string description)
         {
             this.Goal = goal;
             this.Description = description;
+        }
+
+        public bool IsReached(Player player)
+        {
+            return Goal.IsReached(player);
         }
     }
 }
