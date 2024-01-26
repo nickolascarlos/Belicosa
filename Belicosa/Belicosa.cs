@@ -218,6 +218,11 @@ namespace Belicosa
 
                 player.AddFreeTroops(troopsQuantity);
 
+                cards.ForEach(card => {
+                    player.RemoveTerritoryCard(card);
+                    TerritoryCards.Prepend(card);
+                });
+
                 return true;
             }
             else
