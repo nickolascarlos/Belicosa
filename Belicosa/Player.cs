@@ -106,5 +106,15 @@ namespace Belicosa
         {
            return GoalCard.IsReached(this);
         }
+
+        public void RemoveTerritoryCard(TerritoryCard card)
+        {
+            TerritoryCards.Remove(card);
+        }
+
+        public bool ExchangeCards(List<TerritoryCard> cards)
+        {
+            return Belicosa.GetInstance().ExchangeCards(this, cards);
+        }
     }
 }

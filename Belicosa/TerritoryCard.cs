@@ -10,8 +10,8 @@ namespace Belicosa
 {
     public class TerritoryCard
     {
-        private Territory Territory { get; set; }
-        private Shape Shape { get; set; }
+        public Territory Territory { get; private set; }
+        public Shape Shape { get; private set; }
 
         public TerritoryCard(Territory territory, Shape shape)
         {

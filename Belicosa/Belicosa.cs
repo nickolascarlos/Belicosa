@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Belicosa.Enums;
+using Belicosa.Records;
+using Belicosa.utilities;
 
 namespace Belicosa
 {
@@ -22,6 +24,7 @@ namespace Belicosa
         private List<Territory> Territories { get; set; } = new List<Territory>();
         public List<Continent> Continents { get; private set; } = new List<Continent>();
 
+        public TroopsTable TroopsTable { get; private set; }
         private Belicosa() { }
 
         public static Belicosa GetInstance()
@@ -64,6 +67,11 @@ namespace Belicosa
             {
                 GoalCards.Add(goalCard);
             }
+        }
+
+        public void SetTroopsTable(TroopsTable troopsTable)
+        {
+            TroopsTable = troopsTable;
         }
 
         public void StartGame(List<string> playerNames)
@@ -195,10 +203,60 @@ namespace Belicosa
             return (from continent in Continents where continent.Name == name select continent).First();
         }
 
+        public bool ExchangeCards(Player player, List<TerritoryCard> cards)
+        {
+            if (cards.Count != 3)
+                throw new Exception("Exactly 3 cards are needed for exchange");
+
+            if (cards.Any(card => !player.TerritoryCards.Contains(card)))
+                return false;
+
+            if (AllCardsHaveDifferentShapes(cards) || AllCardsHaveTheSameShape(cards))
+            {
+                int troopsQuantity = TroopsTable.GetTroopsQuantity(new Exchange(CurrentCardExchangeCount));
+                CurrentCardExchangeCount++;
+
+                player.AddFreeTroops(troopsQuantity);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool AllCardsHaveTheSameShape(List<TerritoryCard> cards)
+        {
+            return cards.TrueForAll(card => card.Shape == cards[0].Shape);
+        }
+
+        private bool AllCardsHaveDifferentShapes(List<TerritoryCard> cards)
+        {
+            // TODO: Improve this code
+            for (int i = 0; i < 3; i++)
+            {
+                TerritoryCard card = cards[i];
+                for (int j = 0; j < i; j++)
+                {
+                    if (card.Shape == cards[j].Shape)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public TerritoryCard GetTerritoryCardByName(string territoryName)
+        {
+            return (from card in TerritoryCards where card.Territory.Name == territoryName select card).First();
+        }
+
         public void PrintGameResume()
         {
             foreach (var player in Belicosa.GetInstance().Players)
-            {
+            {   
                 Console.WriteLine(player.Name);
                 Console.WriteLine($"\t Goal: {player.GoalCard.Description}");
                 Console.WriteLine("\t Territories");
