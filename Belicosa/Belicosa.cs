@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Belicosa.Enums;
+using Belicosa.Handlers;
 using Belicosa.Records;
 using Belicosa.utilities;
 
@@ -16,15 +17,15 @@ namespace Belicosa
     {
         private static Belicosa? _instance;
 
-        private int CurrentCardExchangeCount { get; set; } = 0;
+        public int CurrentCardExchangeCount { get; private set; } = 0;
         public List<Player> Players { get; private set; } = new List<Player>();
-        private IEnumerable<Player> DefaultPlayersTurnIterator { get; set; }
         private List<GoalCard> GoalCards { get; set; } = new List<GoalCard>();
         private List<TerritoryCard> TerritoryCards { get; set; } = new List<TerritoryCard>();
         private List<Territory> Territories { get; set; } = new List<Territory>();
         public List<Continent> Continents { get; private set; } = new List<Continent>();
-
         public TroopsTable TroopsTable { get; private set; }
+        private Type InteractionHandlerClass { get; set; }
+
         private Belicosa() { }
 
         public static Belicosa GetInstance()
@@ -74,6 +75,16 @@ namespace Belicosa
             TroopsTable = troopsTable;
         }
 
+        public void SetInteractionHandlerClass(Type interactionHandlerClass)
+        {
+            if (!interactionHandlerClass.IsSubclassOf(typeof(InteractionHandler)))
+            {
+                throw new Exception("Interaction handler class must be subclass of InteractionHandler class");
+            }
+
+            InteractionHandlerClass = interactionHandlerClass;
+        }
+
         public void StartGame(List<string> playerNames)
         {
 
@@ -96,16 +107,36 @@ namespace Belicosa
                 Players.Add(new Player(playerNames[i], colorsDeck[i], goalCardsDeck[i]));
             }
 
-            // Distributes territory cards
+            // "Distributes" territory cards
             for (int i = 0; i < territoryCardsDeck.Count; i++)
             {
                 Player player = Players[i % Players.Count];
                 TerritoryCard card = territoryCardsDeck[i];
 
-                player.AddTerritoryCard(card);
                 Territory cardTerritory = card.GetTerritory();
                 cardTerritory.SetOcuppyingPlayer(player);
                 cardTerritory.AddTroops(1);
+            }
+
+            // Shuffles territory cards (instance deck)
+            TerritoryCards = TerritoryCards.OrderBy(_ => new Random().Next()).ToList();
+
+            MainLoop();
+        }
+
+        private void MainLoop()
+        {
+            foreach (Player player in LoopIteratePlayers())
+            {
+
+                InteractionHandler handler = ((InteractionHandler) Activator.CreateInstance(InteractionHandlerClass, player)!);
+                handler.Handle();
+
+                if (player.ReachedGoal())
+                {
+                    Console.WriteLine($"{player.Name} venceu o jogo!");
+                    return;
+                }
             }
         }
 
@@ -253,9 +284,36 @@ namespace Belicosa
             return true;
         }
 
+        public void GivePlayerATerritoryCard(Player player)
+        {
+            TerritoryCard territoryCard = TerritoryCards.Last();
+            TerritoryCards.Remove(territoryCard);
+            player.AddTerritoryCard(territoryCard);
+        }
         public TerritoryCard GetTerritoryCardByName(string territoryName)
         {
-            return (from card in TerritoryCards where card.Territory.Name == territoryName select card).First();
+            return (
+                    from card in TerritoryCards
+                    where card.Territory.Name == territoryName
+                    select card
+                ).First();
+        }
+
+        public List<Continent> GetContinentsDominatedByPlayer(Player player)
+        {
+            return (
+                    from continent in Continents
+                    where continent.Territories.All(territory => territory.GetOccupant() == player)
+                    select continent
+                ).ToList();
+        }
+
+        public IEnumerable<Player> LoopIteratePlayers()
+        {
+            for (int i = 0; ; i = (i+1) % Players.Count)
+            {
+                yield return Players[i];
+            }
         }
 
         public void PrintGameResume()

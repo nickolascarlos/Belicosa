@@ -76,7 +76,7 @@ namespace Belicosa
 
         public int GetTotalContinentalTroops()
         {
-            return AvailableContinentalDistributionTroops.Select(c => c.Value).Aggregate<int>((acc, availableTroops) => acc + availableTroops);
+            return AvailableContinentalDistributionTroops.Select(c => c.Value).Aggregate(0, (acc, availableTroops) => acc + availableTroops);
         }
 
         public bool DistributeFreeTroops(Territory territory, int troopsQuantity)

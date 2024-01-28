@@ -18,7 +18,7 @@ namespace Belicosa.Reachables
 
         public ConquerTerritory(Territory territory)
         {
-            this.Territory= territory;
+            this.Territory = territory;
         }
 
         public override bool CheckCurrentReached(Player player)
