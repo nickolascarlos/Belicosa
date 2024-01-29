@@ -284,12 +284,28 @@ namespace Belicosa
             return true;
         }
 
+        public List<TerritoryCard> GetAvailableTerritoryCards()
+        {
+            return (from card in TerritoryCards where card.Holder == null select card).ToList();
+        }
+
+        public TerritoryCard GetRandomAvailableTerritoryCard()
+        {
+            List<TerritoryCard> availableCards = GetAvailableTerritoryCards();
+            return availableCards[new Random().Next(0, availableCards.Count)] ;
+        }
+
         public void GivePlayerATerritoryCard(Player player)
         {
-            TerritoryCard territoryCard = TerritoryCards.Last();
-            TerritoryCards.Remove(territoryCard);
-            player.AddTerritoryCard(territoryCard);
+            TerritoryCard territoryCard = GetRandomAvailableTerritoryCard();
+            territoryCard.SetHolder(player);
         }
+
+        public List<TerritoryCard> GetPlayerTerritoryCards(Player player)
+        {
+            return (from card in TerritoryCards where card.Holder == player select card).ToList();
+        }
+
         public TerritoryCard GetTerritoryCardByName(string territoryName)
         {
             return (

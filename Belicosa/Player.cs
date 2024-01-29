@@ -14,17 +14,15 @@ namespace Belicosa
         public Color Color { get; private set; }
         public GoalCard GoalCard { get; private set; }
 
-        public List<TerritoryCard> TerritoryCards { get; set; } = new List<TerritoryCard>();
+        public List<TerritoryCard> TerritoryCards {
+            get
+            {
+                return Belicosa.GetInstance().GetPlayerTerritoryCards(this);
+            }
+            set { }
+        }
         public int AvailableFreeDistributionTroops { get; private set; } = 0;
         public Dictionary<Continent, int> AvailableContinentalDistributionTroops { get; private set; } = new();
-
-        public Player(string name, Color color, GoalCard goalCard, List<TerritoryCard> territoryCards)
-        {
-            Name = name;
-            Color = color;
-            GoalCard = goalCard;
-            TerritoryCards = territoryCards;
-        }
 
         public Player(string name, Color color, GoalCard goalCard)
         {
@@ -36,13 +34,13 @@ namespace Belicosa
         public void AddTerritoryCards(List<TerritoryCard> territoryCards) {
             foreach (TerritoryCard card in territoryCards)
             {
-                AddTerritoryCard(card);
+                card.SetHolder(this);
             }
         }
 
         public void AddTerritoryCard(TerritoryCard card)
         {
-            TerritoryCards.Add(card);
+            card.SetHolder(this);
         }
 
         public Tuple<int, int> Attack(Territory attackerTerritory, Territory defenderTerritory, int troopsQuantity)
@@ -109,7 +107,7 @@ namespace Belicosa
 
         public void RemoveTerritoryCard(TerritoryCard card)
         {
-            TerritoryCards.Remove(card);
+            card.SetHolder(null);
         }
 
         public bool ExchangeCards(List<TerritoryCard> cards)

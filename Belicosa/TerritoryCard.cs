@@ -13,6 +13,8 @@ namespace Belicosa
         public Territory Territory { get; private set; }
         public Shape Shape { get; private set; }
 
+        public Player? Holder { get; private set; }
+
         public TerritoryCard(Territory territory, Shape shape)
         {
             this.Territory = territory;
@@ -22,6 +24,11 @@ namespace Belicosa
         public Territory GetTerritory()
         {
             return Territory;
+        }
+
+        public void SetHolder(Player? holder)
+        {
+            Holder = holder;
         }
 
         public override string ToString()
