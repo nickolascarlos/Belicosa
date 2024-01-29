@@ -21,9 +21,9 @@ namespace Belicosa.Reachables
             this.Territory = territory;
         }
 
-        public override bool CheckCurrentReached(Player player)
+        public override bool CheckCurrentReached(Player player, Belicosa belicosa)
         {
-            return Belicosa.GetInstance().GetPlayerTerritories(player).Any(territory => territory == Territory);
+            return belicosa.GetPlayerTerritories(player).Any(territory => territory == Territory);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Belicosa.Reachables
 
         public ConquerNTerritories(int territoriesQuantity)
         {
-            this.TerritoriesQuantity = territoriesQuantity;
+            TerritoriesQuantity = territoriesQuantity;
         }
 
         public ConquerNTerritories(ReachableDecorator decorated, int territoriesQuantity)
@@ -21,9 +21,9 @@ namespace Belicosa.Reachables
             this.TerritoriesQuantity = territoriesQuantity;
         }
 
-        public override bool CheckCurrentReached(Player player)
+        public override bool CheckCurrentReached(Player player, Belicosa belicosa)
         {
-            return Belicosa.GetInstance().GetPlayerTerritories(player).Count > TerritoriesQuantity;
+            return belicosa.GetPlayerTerritories(player).Count > TerritoriesQuantity;
         }
 
 

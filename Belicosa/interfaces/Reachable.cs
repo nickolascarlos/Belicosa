@@ -8,6 +8,6 @@ namespace Belicosa.Interfaces
 {
     public interface IReachable
     {
-        bool IsReached(Player player);
+        bool IsReached(Player player, Belicosa belicosa);
     }
 }

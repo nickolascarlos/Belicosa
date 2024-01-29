@@ -40,9 +40,9 @@ namespace Belicosa
             }
         }
 
-        public void AddBordersByName(List<string> territoryNames)
+        public void AddBordersByName(List<string> territoryNames, Belicosa belicosa)
         {
-            AddBorders(territoryNames.Select(territoryName => Belicosa.GetInstance().GetTerritoryByName(territoryName)).ToList());
+            AddBorders(territoryNames.Select(belicosa.GetTerritoryByName).ToList());
         }
 
         public Player GetOccupant()

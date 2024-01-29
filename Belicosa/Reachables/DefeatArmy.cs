@@ -22,9 +22,9 @@ namespace Belicosa.Reachables
             this.Color = color;
         }
 
-        public override bool IsReached(Player player)
+        public override bool CheckCurrentReached(Player player, Belicosa belicosa)
         {
-            throw new NotImplementedException();
+            return false;
         }
     }
 }

@@ -4,7 +4,7 @@
     {
         public static void Main()
         {
-            Belicosa belicosa = Belicosa.GetInstance();
+            Belicosa belicosa = new Belicosa();
         }
     }
 }

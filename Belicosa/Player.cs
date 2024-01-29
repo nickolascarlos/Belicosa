@@ -14,21 +14,24 @@ namespace Belicosa
         public Color Color { get; private set; }
         public GoalCard GoalCard { get; private set; }
 
+        public Belicosa Belicosa { get; private set; }
+
         public List<TerritoryCard> TerritoryCards {
             get
             {
-                return Belicosa.GetInstance().GetPlayerTerritoryCards(this);
+                return Belicosa.GetPlayerTerritoryCards(this);
             }
             set { }
         }
         public int AvailableFreeDistributionTroops { get; private set; } = 0;
         public Dictionary<Continent, int> AvailableContinentalDistributionTroops { get; private set; } = new();
 
-        public Player(string name, Color color, GoalCard goalCard)
+        public Player(string name, Color color, GoalCard goalCard, Belicosa belicosa)
         {
             Name = name;
             Color = color;
             GoalCard = goalCard;
+            Belicosa = belicosa;
         }
 
         public void AddTerritoryCards(List<TerritoryCard> territoryCards) {
@@ -45,7 +48,7 @@ namespace Belicosa
 
         public Tuple<int, int> Attack(Territory attackerTerritory, Territory defenderTerritory, int troopsQuantity)
         {
-            return Belicosa.GetInstance().PerformAttack(attackerTerritory, defenderTerritory, troopsQuantity);
+            return Belicosa.PerformAttack(attackerTerritory, defenderTerritory, troopsQuantity);
         }
 
         public List<int> Throw(int quantity)
@@ -89,7 +92,7 @@ namespace Belicosa
 
         public bool DistributeContinentalTroops(Territory territory, int troopsQuantity)
         {
-            Continent territoryContinent = Belicosa.GetInstance().GetTerritoryContinent(territory);
+            Continent territoryContinent = Belicosa.GetTerritoryContinent(territory);
             int availableContinentalTroops = AvailableContinentalDistributionTroops.GetValueOrDefault(territoryContinent, 0);
 
             if (availableContinentalTroops < troopsQuantity || territory.GetOccupant() != this)
@@ -102,7 +105,7 @@ namespace Belicosa
 
         public bool ReachedGoal()
         {
-           return GoalCard.IsReached(this);
+           return GoalCard.IsReached(this, Belicosa);
         }
 
         public void RemoveTerritoryCard(TerritoryCard card)
@@ -112,7 +115,7 @@ namespace Belicosa
 
         public bool ExchangeCards(List<TerritoryCard> cards)
         {
-            return Belicosa.GetInstance().ExchangeCards(this, cards);
+            return Belicosa.ExchangeCards(this, cards);
         }
     }
 }

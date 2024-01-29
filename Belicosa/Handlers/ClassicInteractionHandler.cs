@@ -13,7 +13,7 @@ namespace Belicosa.Handlers
     {
         bool ConqueredAnyTerritory = false;
 
-        public ClassicInteractionHandler(Player player) : base(player) { }
+        public ClassicInteractionHandler(Player player, Belicosa belicosa) : base(player, belicosa) { }
 
         public override void Handle()
         {
@@ -45,6 +45,9 @@ namespace Belicosa.Handlers
         
         private void HandleCardExchange()
         {
+            Console.WriteLine($"Suas cartas: {String.Join(", ", Player.TerritoryCards.Select(c => $"{c.Territory.Name} - {c.Shape}"))}");
+            
+
             if (Player.TerritoryCards.Count < 3)
             {
                 Console.Write("Você não tem cartas suficientes para troca");
@@ -74,9 +77,9 @@ namespace Belicosa.Handlers
 
             List<TerritoryCard> territoryCards = ReadLineUntil(
                 readValue => readValue.Split(" ").ToList().Count > 3, "Selecione exatamente 3 cartas").Split(" ").ToList()
-                .Select(territoryName => Belicosa.GetInstance().GetTerritoryCardByName(territoryName)).ToList();
+                .Select(territoryName => Belicosa.GetTerritoryCardByName(territoryName)).ToList();
 
-            int troopsQuantity = Belicosa.GetInstance().TroopsTable.GetTroopsQuantity(new Exchange(Belicosa.GetInstance().CurrentCardExchangeCount));
+            int troopsQuantity = Belicosa.TroopsTable.GetTroopsQuantity(new Exchange(Belicosa.CurrentCardExchangeCount));
             bool exchangeSucceeded = Player.ExchangeCards(territoryCards);
 
             if (exchangeSucceeded)
@@ -92,9 +95,9 @@ namespace Belicosa.Handlers
     
         private void HandleContinentalDistribution()
         {
-            foreach (Continent continent in Belicosa.GetInstance().GetContinentsDominatedByPlayer(Player))
+            foreach (Continent continent in Belicosa.GetContinentsDominatedByPlayer(Player))
             {
-                int continentalTroopsQuantity = Belicosa.GetInstance().TroopsTable.GetTroopsQuantity(continent);
+                int continentalTroopsQuantity = Belicosa.TroopsTable.GetTroopsQuantity(continent);
                 Player.AddContinentalTroops(continent, continentalTroopsQuantity);
 
                 Console.WriteLine($"[!] {Player.Name} ganha {continentalTroopsQuantity} por dominar o continente {continent.Name}");
@@ -109,8 +112,8 @@ namespace Belicosa.Handlers
                 }
 
                 Console.Write("Território > ");
-                Territory territory = Belicosa.GetInstance().GetTerritoryByName(Console.ReadLine()!.Trim());
-                Continent territoryContinent = Belicosa.GetInstance().GetTerritoryContinent(territory);
+                Territory territory = Belicosa.GetTerritoryByName(Console.ReadLine()!.Trim());
+                Continent territoryContinent = Belicosa.GetTerritoryContinent(territory);
                 if (territory.GetOccupant() != Player)
                 {
                     Console.WriteLine($"O território {territory.Name} não pertence ao jogador {Player.Name}");
@@ -131,12 +134,12 @@ namespace Belicosa.Handlers
         private void HandleFreeDistribution()
         {
             Console.WriteLine("Seus territórios:");
-            foreach (Territory territory in Belicosa.GetInstance().GetPlayerTerritories(Player))
+            foreach (Territory territory in Belicosa.GetPlayerTerritories(Player))
             {
                 Console.WriteLine($"\t{territory.Name} ({territory.TroopCount})");
             }
 
-            int troopsToReceive = Belicosa.GetInstance().GetPlayerTerritories(Player).Count / 2;
+            int troopsToReceive = Belicosa.GetPlayerTerritories(Player).Count / 2;
             Player.AddFreeTroops(Math.Max(3, troopsToReceive));
 
             Console.WriteLine($"[!] {Player.Name} recebeu {troopsToReceive} tropas para distribuir livremente");
@@ -147,7 +150,7 @@ namespace Belicosa.Handlers
                 Console.WriteLine($"Tropas disponíveis: {Player.AvailableFreeDistributionTroops}");
 
                 Console.Write("Território > ");
-                Territory territory = Belicosa.GetInstance().GetTerritoryByName(Console.ReadLine()!.Trim());
+                Territory territory = Belicosa.GetTerritoryByName(Console.ReadLine()!.Trim());
                 if (territory.GetOccupant() != Player)
                 {
                     Console.WriteLine($"O território {territory.Name} não pertence ao jogador {Player.Name}");
@@ -177,7 +180,7 @@ namespace Belicosa.Handlers
                 }
 
                 Console.WriteLine("Alvo > ");
-                Territory defenderTerritory = Belicosa.GetInstance().GetTerritoryByName(Console.ReadLine()!);
+                Territory defenderTerritory = Belicosa.GetTerritoryByName(Console.ReadLine()!);
 
                 if (defenderTerritory.GetOccupant() == Player)
                 {
@@ -185,7 +188,7 @@ namespace Belicosa.Handlers
                 }
 
                 Console.WriteLine("Atacante > ");
-                Territory attackerTerritory = Belicosa.GetInstance().GetTerritoryByName(Console.ReadLine()!);
+                Territory attackerTerritory = Belicosa.GetTerritoryByName(Console.ReadLine()!);
 
                 if (!attackerTerritory.BorderTerritories.Contains(defenderTerritory))
                 {
@@ -231,7 +234,7 @@ namespace Belicosa.Handlers
             }
 
             Console.WriteLine("De > ");
-            Territory from = Belicosa.GetInstance().GetTerritoryByName(Console.ReadLine()!.Trim());
+            Territory from = Belicosa.GetTerritoryByName(Console.ReadLine()!.Trim());
 
             if (from.GetOccupant() != Player)
             {
@@ -240,7 +243,7 @@ namespace Belicosa.Handlers
             }
 
             Console.WriteLine("Para > ");
-            Territory to = Belicosa.GetInstance().GetTerritoryByName(Console.ReadLine()!.Trim());
+            Territory to = Belicosa.GetTerritoryByName(Console.ReadLine()!.Trim());
 
             if (to.GetOccupant() != Player)
             {
@@ -264,7 +267,7 @@ namespace Belicosa.Handlers
         {
             if (ConqueredAnyTerritory)
             {
-                Belicosa.GetInstance().GivePlayerATerritoryCard(Player);
+                Belicosa.GivePlayerATerritoryCard(Player);
                 Console.WriteLine($"[!] O jogador {Player.Name} ganhou 1 carta por haver conquistado territórios nessa rodada");
             }
         }

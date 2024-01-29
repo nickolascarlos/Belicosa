@@ -18,9 +18,9 @@ namespace Belicosa
             this.Description = description;
         }
 
-        public bool IsReached(Player player)
+        public bool IsReached(Player player, Belicosa belicosa)
         {
-            return Goal.IsReached(player);
+            return Goal.IsReached(player, belicosa);
         }
     }
 }

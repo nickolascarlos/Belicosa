@@ -15,28 +15,16 @@ namespace Belicosa
 {
     public class Belicosa
     {
-        private static Belicosa? _instance;
-
         public int CurrentCardExchangeCount { get; private set; } = 0;
         public List<Player> Players { get; private set; } = new List<Player>();
         private List<GoalCard> GoalCards { get; set; } = new List<GoalCard>();
         private List<TerritoryCard> TerritoryCards { get; set; } = new List<TerritoryCard>();
         private List<Territory> Territories { get; set; } = new List<Territory>();
         public List<Continent> Continents { get; private set; } = new List<Continent>();
-        public TroopsTable TroopsTable { get; private set; }
-        private Type InteractionHandlerClass { get; set; }
+        public TroopsTable? TroopsTable { get; private set; }
+        private Type? InteractionHandlerClass { get; set; }
 
-        private Belicosa() { }
-
-        public static Belicosa GetInstance()
-        {
-            if (_instance == null)
-            {
-                _instance = new Belicosa();
-            }
-
-            return _instance;
-        }
+        public Belicosa() { }
 
         public void AddContinents(List<Continent> continents)
         {
@@ -104,7 +92,7 @@ namespace Belicosa
             // Creates players, distributing simultaneously colors and goal cards
             for (int i = 0; i < playerNames.Count; i++)
             {
-                Players.Add(new Player(playerNames[i], colorsDeck[i], goalCardsDeck[i]));
+                Players.Add(new Player(playerNames[i], colorsDeck[i], goalCardsDeck[i], this));
             }
 
             // "Distributes" territory cards
@@ -129,7 +117,7 @@ namespace Belicosa
             foreach (Player player in LoopIteratePlayers())
             {
 
-                InteractionHandler handler = ((InteractionHandler) Activator.CreateInstance(InteractionHandlerClass, player)!);
+                InteractionHandler handler = ((InteractionHandler) Activator.CreateInstance(InteractionHandlerClass, player, this)!);
                 handler.Handle();
 
                 if (player.ReachedGoal())
@@ -334,7 +322,7 @@ namespace Belicosa
 
         public void PrintGameResume()
         {
-            foreach (var player in Belicosa.GetInstance().Players)
+            foreach (var player in Players)
             {   
                 Console.WriteLine(player.Name);
                 Console.WriteLine($"\t Goal: {player.GoalCard.Description}");
